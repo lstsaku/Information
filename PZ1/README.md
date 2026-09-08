@@ -1,12 +1,15 @@
-graph TD
-A([Начало]) --> B[/Ввод n, массивов A и C/]
-B --> C[Min_Val = A[1] - C[1]<br>Index = 1, i = 2]
-C --> D{i <= n?}
-D -- Да --> E[Diff = A[i] - C[i]]
-E --> F{Diff < Min_Val?}
-F -- Да --> G[Min_Val = Diff<br>Index = i]
-G --> H[i = i + 1]
-F -- Нет --> H
-H --> D
-D -- Нет --> I[/Вывод Min_Val, Index/]
-I --> J([Конец])
+```mermaid
+flowchart TD
+    A(["Начало"]) --> B["Ввод n, массивов A и C"]
+    B --> C["Min_Val = A[1] - C[1]"]
+    C --> D["Index = 1, i = 2"]
+    D --> E{"i <= n ?"}
+    E -- "Да" --> F["Diff = A[i] - C[i]"]
+    F --> G{"Diff < Min_Val ?"}
+    G -- "Да" --> H["Min_Val = Diff<br>Index = i"]
+    H --> I["i = i + 1"]
+    G -- "Нет" --> I
+    I --> E
+    E -- "Нет" --> J["Вывод Min_Val, Index"]
+    J --> K(["Конец"])
+```
