@@ -13,3 +13,4 @@ flowchart TD
     E -- "Нет" --> J["Вывод Min_Val, Index"]
     J --> K(["Конец"])
 ```
+![Диаграмма](//www.plantuml.com/plantuml/png/JP0nIyH048Nx-HMlJ30MiSpUuHrdOs5h8o87jyiDn5LCHDlOsecj_o44XHJYRvZzHyukYrxrac_tlNqpgwxVFlIFjosb3shaJIRvaK_u2l8jOnZ287DY4zQG6Hj3pGNxcyjjYoNML_KrZh5HKNxkT_PPQLs1LKuCqTEUMuk2iLZ2dvRW3eMyorWIq9onSoc4KuYAKSmEHJfP83-aldvl_RyJEEWGxve4_mfm_BT-nuwKSYGuGcr8MMua7_8LNagACuVNF7KEhP22Z6xbxfvMQj8L_G80)
