@@ -13,3 +13,7 @@ flowchart TD
     E -- "Нет" --> J["Вывод Min_Val, Index"]
     J --> K(["Конец"])
 ```
+| First Header | Second Header |
+| ------------- | ------------- |
+| Content Cell | Content Cell |
+| Content Cell | Content Cell |
