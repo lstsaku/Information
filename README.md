@@ -58,7 +58,9 @@ Candidate of Economic Sciences, Associate Professor, Lipetsk Branch of the Finan
 * **rag_engine.py:** локальный семантический поиск по файлам регламентов в папке knowledge_base/.
 * **main.py:** диспетчеризация вызовов Win32 API и оркестрация модулей.
 
+
 flowchart TD
+
     A["Речевой запрос пользователя"] --> B["Захват звука 16 кГц<br/>sounddevice"]
     B --> C["Whisper tiny<br/>локальная транскрипция"]
     C --> D{"Диспетчер<br/>main.py"}
