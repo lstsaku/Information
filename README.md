@@ -59,25 +59,28 @@ Candidate of Economic Sciences, Associate Professor, Lipetsk Branch of the Finan
 * **main.py:** диспетчеризация вызовов Win32 API и оркестрация модулей.
 
 
+```mermaid
 flowchart TD
+A["Речевой запрос пользователя"] --> B["Захват звука 16 кГц<br/>sounddevice"]
+B --> C["Whisper tiny<br/>локальная транскрипция"]
+C --> D{"Диспетчер<br/>main.py"}
 
-    A["Речевой запрос пользователя"] --> B["Захват звука 16 кГц<br/>sounddevice"]
-    B --> C["Whisper tiny<br/>локальная транскрипция"]
-    C --> D{"Диспетчер<br/>main.py"}
+D -- "Команда действия" --> E["app_finder.py<br/>TheFuzz + сленг"]
+D -- "Информационный запрос" --> F["rag_engine.py<br/>knowledge_base/"]
 
-    D -- "Команда действия" --> E["app_finder.py<br/>TheFuzz + сленг"]
-    D -- "Информационный запрос" --> F["rag_engine.py<br/>knowledge_base/"]
+E --> G["Win32 API<br/>запуск приложения"]
+F --> H["Извлечение цитаты<br/>из регламента"]
 
-    E --> G["Win32 API<br/>запуск приложения"]
-    F --> H["Извлечение цитаты<br/>из регламента"]
+G --> I["Результат в ОС<br/>Zero-WAN"]
+H --> I
 
-    G --> I["Результат в ОС<br/>Zero-WAN"]
-    H --> I
+classDef core fill:#238636,stroke:#2ea043,color:#fff;
+classDef proc fill:#1f6feb,stroke:#388bfd,color:#fff;
+classDef io fill:#161b22,stroke:#30363d,color:#c9d1d9;
 
-    classDef core fill:#238636,stroke:#2ea043,color:#fff;
-    classDef proc fill:#1f6feb,stroke:#388bfd,color:#fff;
-    classDef io fill:#161b22,stroke:#30363d,color:#c9d1d9;
+class C,D core;
+class E,F,G,H proc;
+class A,B,I io;
 
-    class C,D core;
     class E,F,G,H proc;
     class A,B,I io;
