@@ -62,6 +62,14 @@ T_ответа = T_захвата + T_транскрипции + T_маршру�
 | Понимание разговорного сленга | Часто требует формальных команд | TheFuzz + адаптивный словарь | Уменьшает ошибки и повторные запросы [7] |
 | Поиск по нормативным документам | Как правило, внешний или отсутствует | Локальный RAG по knowledge_base/ | Ускоряет доступ к регламентам и инструкциям [5] |
 
+| Criterion | Cloud Assistants | “Nexus Assist” | Significance for regional infrastructure |
+|---|---|---|---|
+| Operation without the internet | Depends on an external channel | Retains basic functions | Increases service resilience in peripheral areas [1] |
+| Personal data processing | Transfer to external services | Zero‑WAN, local processing | Reduces risks under Federal Law No. 152‑FZ [2] |
+| Accessibility for users with disabilities | Limited by interface and connectivity | Zero-Click, voice control | Supports digital inclusion [3] |
+| Understanding of colloquial slang | Often requires formal commands | TheFuzz + adaptive dictionary | Reduces errors and repeated requests [7] |
+| Search by regulatory documents | Typically external or absent | Local RAG on knowledge_base/ | Speeds up access to regulations and instructions [5] |
+
 Примечание. Составлено авторами по [2; 3; 5; 7].
 
 Инфраструктурный эффект проекта состоит не в замене сотрудников, а в снижении трения повседневной работы. Голосовое открытие приложений экономит секунды, но в масштабе приема граждан эти секунды превращаются в часы свободного времени. Локальный поиск по инструкциям уменьшает количество уточняющих обращений, снижает вероятность ошибки и помогает быстрее ориентироваться в нормативных документах. Для региона это означает более устойчивое первичное звено управления: меньше зависимости от внешних облачных провайдеров, меньше рисков при сбоях связи, больше возможностей для создания инклюзивных рабочих мест.
@@ -118,3 +126,27 @@ flowchart TD
     class A,B,I io;
 ```
 
+
+```mermaid
+flowchart TD
+    A["User speech request"] --> B["Sound capture at 16 kHz<br/>sounddevice"]
+    B --> C["Whisper tiny<br/>local transcription"]
+    C --> D{"Dispatcher<br/>main.py"}
+
+    D -- "Action command" --> E["app_finder.py<br/>TheFuzz + slang"]
+    D -- "Information request" --> F["rag_engine.py<br/>knowledge_base/"]
+
+    E --> G[“Win32 API<br/>application launch”]
+    F --> H[“Extracting a quote<br/>from the regulation”]
+
+    G --> I["Result in OS<br/>Zero-WAN"]
+    H --> I
+
+    classDef core fill:#238636,stroke:#2ea043,color:#fff;
+    classDef proc fill:#1f6feb,stroke:#388bfd,color:#fff;
+    classDef io fill:#161b22,stroke:#30363d,color:#c9d1d9;
+
+    class C,D core;
+    class E,F,G,H proc;
+    class A,B,I io;
+```
