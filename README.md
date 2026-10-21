@@ -150,3 +150,179 @@ flowchart TD
     class E,F,G,H proc;
     class A,B,I io;
 ```
+
+
+import tkinter as tk
+from tkinter import messagebox
+
+
+def open_login(root, open_main):
+    root.title("Авторизация")
+    root.geometry("300x220")
+
+    # Поле логина
+    tk.Label(root, text="Введите логин:").pack(pady=3)
+    login_entry = tk.Entry(root)
+    login_entry.pack(pady=3)
+
+    # Поле пароля
+    tk.Label(root, text="Введите пароль:").pack(pady=3)
+    pass_entry = tk.Entry(root, show="*")
+    pass_entry.pack(pady=3)
+
+    # Надпись для ошибки (пока пустая)
+    error_label = tk.Label(root, text="", fg="red")
+    error_label.pack(pady=8)
+
+    # Функция проверки при нажатии на кнопку
+    def check_login():
+        login = login_entry.get()
+        password = pass_entry.get()
+
+        if (login == "admin" or login == "админ") and password == "1234":
+            error_label.config(text="")
+            open_main()  # Открываем главное окно
+        else:
+            error_label.config(text="Ошибка: неверный логин или пароль!")
+            messagebox.showerror("Ошибка", "Неверный логин или пароль!")
+
+    # Кнопка входа
+    tk.Button(root, text="Войти", command=check_login).pack(pady=5)
+
+import tkinter as tk
+from auth.login_window import open_login
+from main_app.orders_window import OrdersWindow
+
+
+def start_main():
+    OrdersWindow(tk.Toplevel())
+
+
+root = tk.Tk()
+open_login(root, start_main)
+root.mainloop()
+
+
+import tkinter as tk
+from tkinter import ttk
+
+
+class OrdersWindow:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Работа с заказами")
+        self.root.geometry("870x430")
+        self.root.resizable(False, False)
+
+        # Верхняя часть: Фильтр и Поиск
+        top_frame = tk.Frame(root, padx=20, pady=15)
+        top_frame.pack(fill=tk.X)
+
+        # Первая строка: Выберите заказчика + кнопки
+        tk.Label(top_frame, text="Выберите заказчика", font=("Comic Sans MS", 10)).grid(
+            row=0, column=0, sticky="w", padx=(0, 15), pady=6
+        )
+        customer_cb = ttk.Combobox(
+            top_frame,
+            values=['ООО "Кинотеатр Квант"', 'ООО "Ассоль"', 'ООО "Поставка"'],
+            width=25,
+            font=("Comic Sans MS", 10)
+        )
+        customer_cb.set('ООО "Кинотеатр Квант"')
+        customer_cb.grid(row=0, column=1, padx=5, pady=6)
+
+        tk.Button(top_frame, text="Фильтровать", font=("Comic Sans MS", 9), width=13, relief="solid", bd=1).grid(
+            row=0, column=2, padx=10, pady=6
+        )
+        tk.Button(top_frame, text="Показать все", font=("Comic Sans MS", 9), width=13, relief="solid", bd=1).grid(
+            row=0, column=3, padx=5, pady=6
+        )
+
+        # Вторая строка: Введите строку поиска + кнопка Найти
+        tk.Label(top_frame, text="Введите строку поиска", font=("Comic Sans MS", 10)).grid(
+            row=1, column=0, sticky="w", padx=(0, 15), pady=6
+        )
+        search_entry = tk.Entry(top_frame, width=28, font=("Comic Sans MS", 10), relief="solid", bd=1)
+        search_entry.grid(row=1, column=1, padx=5, pady=6)
+
+        tk.Button(top_frame, text="Найти", font=("Comic Sans MS", 9), width=13, relief="solid", bd=1).grid(
+            row=1, column=2, padx=10, pady=6
+        )
+
+        # Центральная часть: Таблица + блок сортировки справа
+        middle_frame = tk.Frame(root, padx=20, pady=5)
+        middle_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Таблица заказов
+        columns = ("customer", "city", "phone", "date", "qty")
+        tree = ttk.Treeview(middle_frame, columns=columns, show="headings", height=5)
+
+        tree.heading("customer", text="Заказчик")
+        tree.heading("city", text="Город")
+        tree.heading("phone", text="Телефон")
+        tree.heading("date", text="Дата заказа")
+        tree.heading("qty", text="Количество продукции")
+
+        tree.column("customer", width=150)
+        tree.column("city", width=110)
+        tree.column("phone", width=120)
+        tree.column("date", width=100)
+        tree.column("qty", width=150)
+
+        # Статичные строки из макета
+        rows = [
+            ('ООО "Ассоль"', "Калуга", "+79184572398", "06.06.2026", "3"),
+            ('ООО "Кинотеатр Квант"', "Железноводск", "+79884581555", "15.06.2026", "10"),
+            ('ООО "Поставка"', "Пятигорск", "+79198634592", "21.07.2026", "99"),
+        ]
+        for row in rows:
+            tree.insert("", tk.END, values=row)
+
+        tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Правый блок сортировки
+        sort_frame = tk.Frame(middle_frame, padx=20)
+        sort_frame.pack(side=tk.RIGHT, fill=tk.Y)
+
+        tk.Label(sort_frame, text="Выберите поле для сортировки", font=("Comic Sans MS", 10)).pack(
+            anchor="w", pady=(0, 5)
+        )
+
+        list_container = tk.Frame(sort_frame)
+        list_container.pack(anchor="w")
+
+        scrollbar = tk.Scrollbar(list_container, orient=tk.VERTICAL)
+        listbox = tk.Listbox(
+            list_container,
+            height=4,
+            width=24,
+            font=("Comic Sans MS", 9),
+            yscrollcommand=scrollbar.set,
+            relief="solid",
+            bd=1
+        )
+        scrollbar.config(command=listbox.yview)
+
+        for item in ["Заказчик", "Город", "Количество продукции"]:
+            listbox.insert(tk.END, item)
+
+        listbox.pack(side=tk.LEFT)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Радиокнопки сортировки
+        sort_var = tk.StringVar(value="asc")
+        tk.Radiobutton(
+            sort_frame, text="По возрастанию", variable=sort_var, value="asc", font=("Comic Sans MS", 9)
+        ).pack(anchor="w", pady=(10, 2))
+        tk.Radiobutton(
+            sort_frame, text="По убыванию", variable=sort_var, value="desc", font=("Comic Sans MS", 9)
+        ).pack(anchor="w")
+
+        # Нижняя часть: Итоги
+        bottom_frame = tk.Frame(root, padx=20, pady=15)
+        bottom_frame.pack(fill=tk.X)
+
+        tk.Label(bottom_frame, text="Всего заказов: 3", font=("Comic Sans MS", 10)).pack(anchor="w", pady=2)
+        tk.Label(bottom_frame, text="Всего заказанной продукции: 112", font=("Comic Sans MS", 10)).pack(anchor="w", pady=2)
+
+
