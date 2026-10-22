@@ -326,3 +326,91 @@ class OrdersWindow:
         tk.Label(bottom_frame, text="Всего заказанной продукции: 112", font=("Comic Sans MS", 10)).pack(anchor="w", pady=2)
 
 
+# solver.py
+# Решение уравнения (a*x + b) / c = 0 в целых числах.
+# Лог -> log.txt, время выполнения -> на экран.
+
+import logging
+import sys
+import time
+
+START = time.perf_counter()          # начало отсчёта времени
+LOG_FILE = "log.txt"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)-8s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[logging.FileHandler(LOG_FILE, mode="w", encoding="utf-8")],
+)
+log = logging.getLogger("equation")
+
+
+def read_int(prompt: str) -> int:
+    """Считывает целое число; при неверном формате просит повторить ввод."""
+    while True:
+        text = input(prompt).strip()
+        try:
+            return int(text)
+        except ValueError:
+            log.warning("Некорректный ввод %r: ожидалось целое число.", text)
+            print("Нужно ввести целое число, попробуйте ещё раз.")
+
+
+def main() -> None:
+    log.info("Старт программы. Уравнение: (a*x + b)/c = 0, x ∈ Z.")
+
+    a = read_int("a = ")
+    b = read_int("b = ")
+    c = read_int("c = ")
+    log.info("Ввод с клавиатуры: a=%d, b=%d, c=%d", a, b, c)
+
+    # --- необходимые условия корректности ввода (через assert) ---
+    assert all(type(v) is int for v in (a, b, c)), \
+        "a, b и c должны быть целыми числами"
+    assert c != 0, "c не должен быть равен 0 (деление на ноль)"
+    # a == 0 не запрещаем: этот случай разбирается отдельно ниже.
+    log.info("Проверки ввода пройдены: типы целые, c != 0.")
+
+    # --- решение ---
+    if a == 0:
+        if b == 0:
+            result = "Решение: любой целый x (бесконечно много решений)."
+            log.info("a=0, b=0: получено тождество 0=0, подходит любой x.")
+        else:
+            result = "Решений в целых числах нет."
+            log.info("a=0, b=%d != 0: уравнение 0=%d неверно при любом x.", b, b)
+
+    elif b % a != 0:
+        result = f"Решений в целых числах нет: x = -b/a = {-b}/{a} не целое."
+        log.info("b=%d не делится на a=%d без остатка: целого корня нет.", b, a)
+
+    else:
+        x = -b // a
+        # контроль правильности найденного результата
+        assert a * x + b == 0, "внутренняя ошибка: x не обращает числитель в 0"
+        assert (a * x + b) / c == 0.0, "внутренняя ошибка: x не является корнем"
+        result = f"Решение: x = {x}"
+        log.info("Корень найден: x=%d; проверка (a*x+b)/c = %s",
+                 x, (a * x + b) / c)
+
+    print(result)
+    log.info("Результат: %s", result)
+
+
+if __name__ == "__main__":
+    exit_code = 0
+    try:
+        main()
+    except AssertionError as err:
+        log.error("Условие ввода нарушено (assert): %s", err)
+        print("Ошибка ввода:", err, file=sys.stderr)
+        exit_code = 1
+    finally:
+        elapsed = time.perf_counter() - START
+        log.info("Время выполнения программы: %.6f с", elapsed)
+        print(f"Время выполнения: {elapsed:.6f} с")
+
+    sys.exit(exit_code)
+
+
